@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>From Me to You · Tell me about them</title>
+<meta name="description" content="Answer a few questions about them in your own time. Talk or type, then send your answers to Sonny.">
+<style>
+/* Layout: one narrow column, one question and one answer box per screen. Same paper, ink and type as the From Me to You offer page. */
+:root {
+  color-scheme: light;
+  --ink: #1d1a17;
+  --soft: #5c5650;
+  --line: #e4dfd8;
+  --paper: #f8f5f0;
+  --field: #fffdf9;
+  --accent: #7a4b2a;
+  --on-ink: #ffffff;
+  --serif: Georgia, "Times New Roman", serif;
+  --ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--paper); }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding-inline: 22px;
+  padding-block: 32px calc(40px + env(safe-area-inset-bottom, 0px));
+}
+.screen { display: flex; flex-direction: column; gap: 18px; }
+.screen > * { margin: 0; }
+
+.brand {
+  font-family: var(--ui);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--soft);
+  padding-bottom: 14px;
+}
+h1 {
+  font-size: 32px;
+  line-height: 1.16;
+  font-weight: 400;
+  letter-spacing: -.3px;
+  text-wrap: balance;
+}
+h1:focus { outline: none; }
+h2 {
+  font-family: var(--ui);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--soft);
+  font-weight: 600;
+}
+.lead { font-size: 21px; }
+.how { display: flex; flex-direction: column; gap: 10px; padding: 0; list-style: none; }
+.how li { padding-left: 22px; position: relative; }
+.how li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: .62em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.small {
+  font-family: var(--ui);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--soft);
+  text-align: center;
+}
+.hint { color: var(--soft); }
+.who {
+  font-size: 16px;
+  color: var(--soft);
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+/* buttons, same as the offer page */
+.cta {
+  display: block;
+  width: 100%;
+  padding: 18px 20px;
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--on-ink);
+  font-family: var(--ui);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.cta.alt { background: transparent; color: var(--ink); }
+.cta:focus-visible, .quiet:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.quiet {
+  align-self: center;
+  padding: 8px 4px;
+  border: 0;
+  background: none;
+  color: var(--soft);
+  font-family: var(--ui);
+  font-size: 15px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* question screen */
+.progress { display: flex; flex-direction: column; gap: 10px; padding-bottom: 8px; }
+.step {
+  margin: 0;
+  font-family: var(--ui);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--soft);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.bar { height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.bar i { display: block; width: 0; height: 100%; background: var(--accent); }
+textarea {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  background: var(--field);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.45;
+  -webkit-appearance: none;
+  appearance: none;
+}
+#answer { min-height: 190px; resize: none; overflow: hidden; }
+textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+::placeholder { color: var(--soft); opacity: 1; }
+.saved { font-family: var(--ui); font-size: 14px; color: var(--soft); }
+.nudge { color: var(--accent); }
+.missing { color: var(--soft); }
+.nav { display: flex; gap: 12px; }
+.nav .cta { min-width: 0; }
+.nav .back { flex: 0 0 34%; }
+.nav .next { flex: 1 1 0; }
+
+/* last screen */
+.backup { display: flex; flex-direction: column; gap: 12px; padding-block: 20px; border-block: 1px solid var(--line); }
+.backup > * { margin: 0; }
+.backup p { font-size: 17px; }
+.num { white-space: nowrap; font-variant-numeric: tabular-nums; }
+#copy-box { min-height: 150px; resize: none; overflow: auto; font-size: 16px; }
+.next-steps { padding: 0; list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: 16px; }
+.next-steps li { position: relative; padding-left: 42px; counter-increment: s; }
+.next-steps li::before {
+  content: counter(s);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ui);
+  font-size: 14px;
+  font-weight: 600;
+}
+.price { padding-block: 20px; border-block: 1px solid var(--line); }
+.price b { font-weight: 400; font-size: 26px; }
+.spacer { padding-top: 10px; }
+
+@media (max-width: 380px) {
+  body { font-size: 18px; }
+  h1 { font-size: 29px; }
+}
+</style>
+</head>
+<body>
+<main>
+
+  <!-- 1. welcome -->
+  <section class="screen" id="screen-intro">
+    <p class="brand">From Me to You</p>
+    <h1 id="intro-title" tabindex="-1">Tell me about them, on your own time.</h1>
+    <p class="lead">I’m Sonny. This is the same conversation we’d have on the phone, one question at a time, whenever you’re ready.</p>
+    <ul class="how">
+      <li>Tap the answer box, then tap the microphone on your keyboard and just talk. It’s a lot easier than typing. You’ll see your words show up as you go.</li>
+      <li>Skip anything you want. Nothing has to be polished.</li>
+      <li>At the end, one tap sends your answers to me as a text.</li>
+    </ul>
+    <p class="spacer"><button type="button" class="cta" id="start">Start</button></p>
+    <p class="small" id="intro-note">12 questions. Your answers stay on this phone until you send them.</p>
+    <p class="who">Sonny reads every answer and may text you one or two more questions. Drafting is AI-assisted and checked line by line against what you actually said; you approve every word, and your words stay yours. Nothing is shared with anyone.</p>
+  </section>
+
+  <!-- 2. one question at a time -->
+  <section class="screen" id="screen-q" hidden>
+    <div class="progress">
+      <p class="step" id="step">Question 1 of 12</p>
+      <div class="bar" aria-hidden="true"><i id="bar-fill"></i></div>
+    </div>
+    <h1 id="q-title" tabindex="-1">Who are we talking about?</h1>
+    <p class="hint" id="q-hint">Their name, and what they were to you.</p>
+    <textarea id="answer" rows="6" aria-labelledby="q-title" aria-describedby="q-hint" placeholder="Tap here. Then tap the microphone on your keyboard and just talk. You’ll see your words show up here. Typing works too."></textarea>
+    <p class="nudge" id="nudge" role="status" hidden></p>
+    <p class="saved" id="saved-note" hidden>Saved on this phone as you go.</p>
+    <div class="nav">
+      <button type="button" class="cta alt back" id="back">Back</button>
+      <button type="button" class="cta next" id="next">Skip</button>
+    </div>
+  </section>
+
+  <!-- 3. send it -->
+  <section class="screen" id="screen-done" hidden>
+    <p class="brand">From Me to You</p>
+    <h1 id="done-title" tabindex="-1">That’s all of it.</h1>
+    <p class="lead" id="done-lead">Send your answers to me and I’ll take it from here.</p>
+    <p class="missing" id="missing" hidden></p>
+    <p class="spacer" id="send-row"><a class="cta" id="send" href="sms:+14145526594">Text my answers to Sonny</a></p>
+    <p class="small" id="send-note">This opens your messages with everything filled in. Just hit send.</p>
+    <div class="backup" id="backup">
+      <p>If your messages don’t open, copy your answers and paste them in a text to <span class="num">414-552-6594</span>.</p>
+      <button type="button" class="cta alt" id="copy">Copy my answers</button>
+      <textarea id="copy-box" readonly hidden aria-label="Your answers, ready to copy"></textarea>
+    </div>
+    <h2>What happens next</h2>
+    <ol class="next-steps">
+      <li>I read every word. If I need more on something, I’ll text you one or two questions.</li>
+      <li>A draft in your words within 24 hours. One round of changes is included.</li>
+      <li>You read it. If it sounds like them, and like you, you pay. If it doesn’t, you don’t.</li>
+    </ol>
+    <p class="price"><b>$199</b> · paid after you’ve approved it, by Venmo or Zelle.</p>
+    <button type="button" class="cta alt" id="edit">Go back and change an answer</button>
+    <button type="button" class="quiet" id="clear">Clear my answers from this phone</button>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  var PHONE = '+14145526594';
+  var KEY = 'fmty-talk-v2';
+
+  // One ask and one answer box per screen: people talk their answer, and they answer the headline.
+  // "nudge" is asked once when a story answer comes back very short.
+  var QS = [
+    { label: 'Who', title: 'Who are we talking about?', hint: 'Their name, and what they were to you.' },
+    { label: 'The service', title: 'When and where is the service?', hint: 'The day, the time, and the place.' },
+    { label: 'How long I’ll speak', title: 'About how long do they want you to speak?', hint: 'A guess is fine. And tell me if anyone else is speaking.' },
+    { label: 'About them', title: 'Tell me about them.', hint: 'Start anywhere. Whatever comes to mind first.', nudge: 'Can you give me one moment that shows that? A time you saw it.' },
+    { label: 'What people said', title: 'What did people always say about them?', hint: 'The thing everyone in that room already knows.' },
+    { label: 'A story only I know', title: 'Give me a story only you would know.', hint: 'It can be small. One afternoon, one phone call, one kitchen table.', nudge: 'Tell me a little more. Where were you, and what did they say or do?' },
+    { label: 'The family story', title: 'What’s the story the family always tells?', hint: 'The one that comes out at every holiday.', nudge: 'How does it go? Tell it the way it gets told.' },
+    { label: 'A saying or habit', title: 'Was there a saying, or a habit everyone knew?', hint: 'Word for word if you can. The coffee, the crossword, the same joke every time.' },
+    { label: 'What I still carry', title: 'What did you get from them that you still carry?', hint: 'Something you do, or say, or believe because of them.', nudge: 'Where does that show up in your life now?' },
+    { label: 'What people should know', title: 'When people walk out of the service, what do you want them to remember?', hint: 'If they only remember one thing.' },
+    { label: 'Laughs, and what to leave out', title: 'Should there be any laughs in it? And does anything have to stay out?', hint: 'A little, a lot, or none. If there’s a person, a subject, or anything else to leave out, say so and it’s out.' },
+    { label: 'One thing I’d say', title: 'If you could say one thing to them right now, what would it be?', hint: 'Take your time. You can skip this one.' }
+  ];
+  var N = QS.length;
+  var SHORT = 15;   // fewer words than this on a story question gets one ask for more
+  var nudged = [];  // which questions have already asked
+
+  function $(id) { return document.getElementById(id); }
+  var screens = { intro: $('screen-intro'), q: $('screen-q'), done: $('screen-done') };
+  var answer = $('answer');
+
+  // ---- saved state: lives only on this phone ----
+  var state = { answers: [], at: 0 };
+  for (var i = 0; i < N; i++) state.answers.push('');
+  var canSave = false;
+  try {
+    var raw = window.localStorage.getItem(KEY);
+    canSave = true;
+    window.localStorage.removeItem('fmty-talk-v1');
+    if (raw) {
+      var old = JSON.parse(raw);
+      if (old && old.answers && old.answers.length === N) {
+        for (var j = 0; j < N; j++) state.answers[j] = String(old.answers[j] || '');
+        state.at = Math.min(Math.max(parseInt(old.at, 10) || 0, 0), N - 1);
+      }
+    }
+  } catch (e) { canSave = false; }
+
+  function save() {
+    if (!canSave) return;
+    try { window.localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function answeredCount() {
+    var c = 0;
+    for (var k = 0; k < N; k++) if (state.answers[k]) c++;
+    return c;
+  }
+
+  // ---- words ----
+  function trimmed(s) { return String(s).replace(/^\s+|\s+$/g, ''); }
+  function words(s) { var t = trimmed(s); return t ? t.split(/\s+/).length : 0; }
+
+  // ---- screens ----
+  function show(name, heading) {
+    for (var s in screens) screens[s].hidden = (s !== name);
+    window.scrollTo(0, 0);
+    try { heading.focus({ preventScroll: true }); } catch (e) {}
+  }
+  function grow() {
+    answer.style.height = 'auto';
+    answer.style.height = Math.max(190, answer.scrollHeight + 2) + 'px';
+  }
+  function nextLabel() {
+    var empty = !trimmed(answer.value);
+    var waiting = !$('nudge').hidden && words(answer.value) < SHORT;
+    $('next').textContent = empty ? 'Skip' : waiting ? 'Move on' : (state.at === N - 1 ? 'Finish' : 'Next');
+  }
+  function keep() {
+    state.answers[state.at] = trimmed(answer.value);
+    save();
+  }
+  function render() {
+    var q = QS[state.at];
+    $('step').textContent = 'Question ' + (state.at + 1) + ' of ' + N;
+    $('bar-fill').style.width = Math.round(((state.at + 1) / N) * 100) + '%';
+    $('q-title').textContent = q.title;
+    $('q-hint').textContent = q.hint;
+    answer.value = state.answers[state.at];
+    $('saved-note').hidden = !canSave;
+    $('nudge').hidden = true;
+    show('q', $('q-title'));
+    grow();
+    nextLabel();
+  }
+
+  function messageText() {
+    var parts = ['Hi Sonny, here are my answers.'];
+    for (var k = 0; k < N; k++) {
+      if (state.answers[k]) parts.push(QS[k].label + ':\n' + state.answers[k]);
+    }
+    return parts.join('\n\n');
+  }
+  function renderDone() {
+    var c = answeredCount();
+    var none = c === 0;
+    $('done-title').textContent = none ? 'Nothing to send yet.' : 'That’s all of it.';
+    $('done-lead').textContent = none
+      ? 'Go back and answer whichever ones you can. Even two or three is a start.'
+      : 'You answered ' + c + ' of ' + N + '. Send ' + (c === 1 ? 'it' : 'them') + ' to me and I’ll take it from here.';
+    var need = [];
+    if (!state.answers[0]) need.push('who they were');
+    if (!state.answers[1]) need.push('when the service is');
+    $('missing').hidden = none || need.length === 0;
+    $('missing').textContent = 'I’ll still need ' + need.join(' and ') + '. Go back and add it, or just tell me by text.';
+    $('send-row').hidden = none;
+    $('send-note').hidden = none;
+    $('backup').hidden = none;
+    $('send-note').textContent = 'This opens your messages with everything filled in. Just hit send.';
+    $('copy-box').hidden = true;
+    $('copy').textContent = 'Copy my answers';
+    $('send').setAttribute('href', 'sms:' + PHONE + '?&body=' + encodeURIComponent(messageText()));
+    show('done', $('done-title'));
+  }
+
+  // ---- wiring ----
+  function introState() {
+    var back = answeredCount() > 0;
+    $('start').textContent = back ? 'Pick up where you left off' : 'Start';
+    $('intro-note').textContent = back
+      ? 'Your answers from before are still on this phone.'
+      : N + ' questions. Your answers stay on this phone until you send them.';
+  }
+  $('start').addEventListener('click', render);
+
+  var timer = null;
+  answer.addEventListener('input', function () {
+    grow();
+    nextLabel();
+    clearTimeout(timer);
+    timer = setTimeout(keep, 400);
+  });
+
+  $('next').addEventListener('click', function () {
+    clearTimeout(timer);
+    keep();
+    var q = QS[state.at];
+    var w = words(state.answers[state.at]);
+    if (q.nudge && w > 0 && w < SHORT && !nudged[state.at]) {
+      // a very short answer to a story question gets one ask for more, then they can move on
+      nudged[state.at] = true;
+      $('nudge').textContent = q.nudge;
+      $('nudge').hidden = false;
+      nextLabel();
+      try { $('nudge').scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+      return;
+    }
+    if (state.at < N - 1) { state.at++; save(); render(); }
+    else { renderDone(); }
+  });
+  $('back').addEventListener('click', function () {
+    clearTimeout(timer);
+    keep();
+    if (state.at > 0) { state.at--; save(); render(); }
+    else { introState(); show('intro', $('intro-title')); }
+  });
+  $('edit').addEventListener('click', function () { state.at = 0; save(); render(); });
+
+  $('send').addEventListener('click', function () {
+    $('send-note').textContent = 'If your messages opened, hit send and you’re done. I’ll text you back.';
+  });
+
+  $('copy').addEventListener('click', function () {
+    var btn = $('copy');
+    var text = messageText();
+    function manual() {
+      var box = $('copy-box');
+      box.hidden = false;
+      box.value = text;
+      box.focus();
+      box.select();
+      try { box.setSelectionRange(0, text.length); } catch (e) {}
+      btn.textContent = 'Selected. Now copy it.';
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Copied. Now paste it in a text.';
+      }, manual);
+    } else {
+      manual();
+    }
+  });
+
+  var armed = false, armTimer = null;
+  $('clear').addEventListener('click', function () {
+    var btn = $('clear');
+    if (!armed) {
+      armed = true;
+      btn.textContent = 'Tap again to erase them for good';
+      armTimer = setTimeout(function () { armed = false; btn.textContent = 'Clear my answers from this phone'; }, 5000);
+      return;
+    }
+    clearTimeout(armTimer);
+    armed = false;
+    btn.textContent = 'Clear my answers from this phone';
+    for (var k = 0; k < N; k++) state.answers[k] = '';
+    state.at = 0;
+    nudged = [];
+    if (canSave) { try { window.localStorage.removeItem(KEY); } catch (e) {} }
+    introState();
+    show('intro', $('intro-title'));
+  });
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden' && !screens.q.hidden) { clearTimeout(timer); keep(); }
+  });
+  window.addEventListener('pagehide', function () {
+    if (!screens.q.hidden) { clearTimeout(timer); keep(); }
+  });
+
+  introState();
+})();
+</script>
+</body>
+</html>
